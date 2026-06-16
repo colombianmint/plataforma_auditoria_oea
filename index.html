@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formación OEA · Técnicas de Auditoría Interna · ISO 19011:2018 — C.I. Colombian Mint</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <script>
+    /* Aplica el tema guardado antes de pintar para evitar parpadeo */
+    (function () {
+      try {
+        var t = localStorage.getItem("oea_tema") || "claro";
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) { document.documentElement.setAttribute("data-theme", "claro"); }
+    })();
+  </script>
+</head>
+
+<body>
+
+  <!-- ====================== ENCABEZADO ====================== -->
+  <header class="topbar" id="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <img class="brand-logo"
+          src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEigu_vafcG5saLG0r13cHA0Y9geRGVEjPESWbHTVt9fegBAIB6QsTVDelYSmoTSb69y912nYTf3ckJC6FeS1OcEyvDA_u3rJUlc3T02BzfssvNRrrLOESObIVaeI0SE3yW7GM4J2VqmB9zrDf6xsc3UyIESHks1sJ8OkxxgBxHinI48TTYsTLHSffvDWA/w100-h90/Logo-versi%C3%B3n-final-2022.png"
+          alt="C.I. Colombian Mint S.A.S.">
+        <div class="brand-text">
+          <strong>Técnicas de Auditoría Interna OEA</strong>
+          <small>Basada en la Norma ISO 19011:2018 · C.I. Colombian Mint S.A.S.</small>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-user" id="topbarUser" hidden>
+          <div class="user-info">
+            <span class="user-name" id="userName"></span>
+            <span class="user-role" id="userRole"></span>
+          </div>
+          <div class="user-global">
+            <div class="mini-bar"><span id="globalBar"></span></div>
+            <small id="globalPct">0%</small>
+          </div>
+          <button class="btn btn-ghost" id="btnSalir" title="Cambiar de auditor">Salir</button>
+        </div>
+        <button class="btn-theme" id="btnTema" title="Cambiar tema claro/oscuro"
+          aria-label="Cambiar tema claro/oscuro"></button>
+        <img class="culture-logo"
+          src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg4tQ1-DZRCCzhvzDy3ghx8AZ70LZg3QIRMN__VptBWEBOP2E6e-56LbFGLDOy06PoGYMxkoytMV_aG2Iw3jSbRxm_YbDzu2g3QGcz0x2FWIxtOS-OYr42tYQOEW0gstVN8UiOXHuwtihC83dXr8JQahY1m8t1-5ahYCya8iMTAyLzJrYahwFheYnFYfvbK/w100-h60/CAPTE%202.0%201.png"
+          alt="Cultura CAPTE 2.0">
+      </div>
+    </div>
+  </header>
+
+  <main id="app" class="app"></main>
+
+  <footer class="footer">
+    <span>Plataforma de formación interna · Área responsable: <strong>Sistemas de Gestión</strong></span>
+    <span id="footerVer">v1.0</span>
+  </footer>
+
+  <!-- ====================== SCRIPTS ====================== -->
+  <script src="js/contenido.js"></script>
+  <script src="js/preguntas.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>

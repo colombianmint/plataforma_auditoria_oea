@@ -1,0 +1,6 @@
+# Archivos temporales de pruebas / sistema
+__*.html
+*.tmp
+Thumbs.db
+.DS_Store
+desktop.ini
