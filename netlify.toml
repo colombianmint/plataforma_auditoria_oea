@@ -1,0 +1,16 @@
+# Configuración de despliegue para Netlify
+# El sitio es estático (HTML/CSS/JS); la raíz del repositorio ya contiene index.html.
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/documentos/*"
+  [headers.values]
+    Content-Type = "application/pdf"
+    X-Content-Type-Options = "nosniff"
