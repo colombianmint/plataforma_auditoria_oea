@@ -3,9 +3,9 @@
    Basada en la Norma ISO 19011:2018
    C.I. COLOMBIAN MINT S.A.S.
    ---------------------------------------------------------------------
-   contenido.js  →  Auditores, Procesos y Contenido de los 9 módulos.
-   Todo el contenido proviene de las 7 sesiones de la formación
-   "Técnicas de Auditoría Interna OEA basada en ISO 19011:2018" (AEON).
+   contenido.js  →  Auditores, Procesos, Documentos PDF y 10 módulos.
+   Integra: formación AEON (Sesiones 1–6, 2025), Calidad Consultora /
+   NTC ISO 9001:2018 + GTC-ISO 19011:2018 (Encuentros 2026) y OEA Res. 15/67.
    ===================================================================== */
 
 /* ---- Equipo de Auditoría Interna (selección de usuario) ---- */
@@ -47,8 +47,24 @@ const CONFIG = {
   umbralAprobacion: 0.8,       // 80% para aprobar cada módulo y el curso
   cursoNombre: "Técnicas de Auditoría Interna de Operador Económico Autorizado OEA, Basada en Norma ISO 19011:2018",
   empresa: "C.I. COLOMBIAN MINT S.A.S.",
-  areaResponsable: "Sistemas de Gestión"
+  areaResponsable: "Sistemas de Gestión",
+  version: "2.1",
+  consultaLibre: true          // todos los capítulos consultables sin bloqueo secuencial
 };
+
+/* ---- Documentos PDF de apoyo (memorias y presentaciones) ---- */
+const DOCUMENTOS = [
+  { id:"aeon-s1", titulo:"Sesión 1 — Contexto, riesgos y caso Contenedor Sombra", fuente:"AEON Consulting", capacitador:"Jairo Blanco", fecha:"Julio 2025", archivo:"documentos/aeon/sesion-1-resumen-oea-2025.pdf", modulos:["m1","m3"], paginas:39, tags:["cadena de suministro","alertas","riesgos","contenedor sombra"] },
+  { id:"aeon-s2", titulo:"Sesión 2 — Madurez del sistema, ketamina e ISO 27001", fuente:"AEON Consulting", capacitador:"Jairo Blanco", fecha:"Julio 2025", archivo:"documentos/aeon/sesion-2-resumen-oea-2025.pdf", modulos:["m2","m3","m4"], paginas:35, tags:["ketamina","simulacros","ISO 27001","trazabilidad"] },
+  { id:"aeon-s3", titulo:"Sesión 3 — Ecosistema global OEA, ARM y revalidación", fuente:"AEON Consulting", capacitador:"Jairo Blanco", fecha:"Julio 2025", archivo:"documentos/aeon/sesion-3-resumen-oea-2025.pdf", modulos:["m2","m4","m5"], paginas:35, tags:["OEA","ARM","C-TPAT","revalidación","BASC"] },
+  { id:"aeon-s4a", titulo:"Sesión 4 Parte A — Requisitos OEA Cap. 1 y 2 (riesgo y asociados)", fuente:"AEON Consulting", capacitador:"Jairo Blanco", fecha:"Julio 2025", archivo:"documentos/aeon/sesion-4a-resumen-oea-2025.pdf", modulos:["m6"], paginas:31, tags:["7 actividades ilícitas","MARM","asociados de negocio"] },
+  { id:"aeon-s4b", titulo:"Sesión 4 Parte B — Caso Exportadora Ficticia S.A.S.", fuente:"AEON Consulting", capacitador:"Jairo Blanco", fecha:"Julio 2025", archivo:"documentos/aeon/sesion-4b-resumen-oea-2025.pdf", modulos:["m6","m9"], paginas:40, tags:["exportadora ficticia","debida diligencia","Cap. 2"] },
+  { id:"aeon-s5", titulo:"Sesión 5 — Capítulos 3 a 6: contenedor, acceso, personal y procesos", fuente:"AEON Consulting", capacitador:"Jairo Blanco", fecha:"Julio 2025", archivo:"documentos/aeon/sesion-5-resumen-oea-2025.pdf", modulos:["m6"], paginas:30, tags:["7 puntos","sellos ISO 17712","visitantes","precinto"] },
+  { id:"aeon-s6", titulo:"Sesión 6 — Auditoría práctica, Cap. 7-9 e ISO 19011", fuente:"AEON Consulting", capacitador:"Jairo Blanco", fecha:"Julio 2025", archivo:"documentos/aeon/sesion-6-resumen-oea-2025.pdf", modulos:["m6","m7","m8","m9"], paginas:50, tags:["ISO 19011","FRIOFORT","seguridad física","TI","entrenamiento"] },
+  { id:"cal-e1", titulo:"Encuentro 1 — NTC ISO 9001:2015: principios y requisitos 4-6", fuente:"Calidad Consultora", capacitador:"Gloria Díaz Valencia", fecha:"Febrero 2026", archivo:"documentos/calidad/encuentro-1-2026-iso9001.pdf", modulos:["m10"], paginas:20, tags:["ISO 9001","PHVA","principios de calidad","contexto"] },
+  { id:"cal-e2", titulo:"Encuentro 2 — NTC ISO 9001:2015: requisitos 7-10", fuente:"Calidad Consultora", capacitador:"Gloria Díaz Valencia", fecha:"Febrero 2026", archivo:"documentos/calidad/encuentro-2-2026-iso9001.pdf", modulos:["m10"], paginas:38, tags:["ISO 9001","soporte","operación","mejora","evaluación"] },
+  { id:"cal-e45", titulo:"Encuentros 4-5 — GTC-ISO 19011: auditoría y simulacros", fuente:"Calidad Consultora", capacitador:"Gloria Díaz Valencia", fecha:"Marzo 2026", archivo:"documentos/calidad/encuentro-4-5-2026-iso19011.pdf", modulos:["m7","m8"], paginas:35, tags:["ISO 19011","plan de auditoría","simulacro","hallazgos"] }
+];
 
 /* =====================================================================
    MÓDULOS Y LECCIONES
@@ -113,6 +129,36 @@ const MODULOS = [
       <h4>Seguridad en la cadena de suministro</h4>
       <p>Son las prácticas, estrategias y medidas implementadas para proteger las mercancías, los datos y los procesos frente a amenazas, riesgos y vulnerabilidades, garantizando que los productos lleguen a su destino de forma segura, eficiente y sin interrupciones.</p>
       <p><strong>Controles clave:</strong> normatividad, seguros, protocolos de seguridad, trazabilidad, seguridad de instalaciones, planes de contingencia y continuidad. Elementos: protección física de productos, ciberseguridad y gestión estratégica de riesgos.</p>`
+    },
+    {
+      titulo: "1.5 Sistema de alertas preventivas en la cadena (AEON · Sesión 1)",
+      html: `
+      <p>El enfoque OEA de C.I. Colombian Mint es <strong>preventivo</strong>: activar alertas internas antes de que una situación se convierta en incidente. La formación AEON (Jairo Blanco, julio 2025) sistematiza cuatro familias de señales de riesgo.</p>
+      <h4>Alertas documentales</h4>
+      <ul>
+        <li>Inconsistencias entre manifiesto, factura, packing list u otros documentos.</li>
+        <li>Cambios de último minuto en la operación sin justificación.</li>
+        <li>Información vaga o genérica sobre el contenido de la carga.</li>
+      </ul>
+      <h4>Alertas operativas</h4>
+      <ul>
+        <li>Desviaciones de la ruta planificada.</li>
+        <li>Paradas no autorizadas o cambios inesperados del transportista.</li>
+        <li>Eventos en ruta no reportados oportunamente.</li>
+      </ul>
+      <h4>Alertas sobre la unidad de carga</h4>
+      <ul>
+        <li>Sellos con numeración incorrecta o señales de manipulación.</li>
+        <li>Daños estructurales no reportados en contenedor o remolque.</li>
+        <li>Discrepancia entre sello físico y documentos de embarque.</li>
+      </ul>
+      <h4>Alertas sobre asociados de negocio</h4>
+      <ul>
+        <li>Uso de proveedores, transportistas o patios logísticos no evaluados.</li>
+        <li>Historial de incidentes de seguridad no analizado.</li>
+        <li>Subcontratación no informada por el asociado.</li>
+      </ul>
+      <div class="callout callout-warning"><strong>Para el auditor interno:</strong> verifique que existan procedimientos que definan quién activa cada alerta, cómo se documenta y cuándo se escala a la autoridad competente (DIAN, Policía Nacional).</div>`
     }
   ]
 },
@@ -244,6 +290,33 @@ const MODULOS = [
       <ul><li>Inmovilización del contenedor.</li><li>Notificación a las autoridades (DIAN, Policía, Fiscalía).</li><li>Inspección con scanner y verificación contra el manifiesto.</li></ul>
       <div class="callout callout-warning"><strong>Regla de oro:</strong> la empresa <strong>nunca</strong> investiga por cuenta propia. La verificación y la manipulación de la evidencia son responsabilidad exclusiva de las autoridades competentes.</div>
       <p><strong>Consecuencias de una contaminación:</strong> suspensión provisional o cancelación de los beneficios OEA, implicaciones penales para los representantes legales, mayores inspecciones, costos de defensa legal y daño reputacional irreparable.</p>`
+    },
+    {
+      titulo: "3.5 Patios logísticos, sellos GPS y madurez del sistema (AEON · Sesiones 1-2)",
+      html: `
+      <h4>Patios logísticos externos</h4>
+      <p>La selección de un patio externo es un <strong>punto crítico</strong>. Un patio no seguro introduce vulnerabilidades por controles de acceso débiles, falta de segregación de carga, vigilancia inadecuada y carencia de trazabilidad. Como empresa OEA estamos obligados a evaluarlos periódicamente con auditoría documental y física: perimetro, accesos, áreas críticas, vigilancia y cumplimiento de protocolos en campo.</p>
+      <h4>Sellos convencionales vs. electrónicos GPS</h4>
+      <table class="tbl">
+        <tr><th>Aspecto</th><th>Sello convencional</th><th>Sello electrónico GPS</th></tr>
+        <tr><td>Detección</td><td>Evidencia a posteriori de manipulación</td><td>Alertas en tiempo real por apertura o desvío</td></tr>
+        <tr><td>Trazabilidad</td><td>Registro manual en bitácora</td><td>Visibilidad continua y trazabilidad electrónica</td></tr>
+        <tr><td>Retos</td><td>Clonación y manipulación</td><td>Inversión, logística inversa y cobertura en rutas</td></tr>
+      </table>
+      <h4>Vulnerabilidades del contenedor 40' (ruta EE.UU.–Colombia)</h4>
+      <ul>
+        <li><strong>Estructurales:</strong> falsos compartimentos en paredes, piso o techo.</li>
+        <li><strong>Sellos:</strong> riesgo de clonación; la inspección de 7 puntos es control crítico.</li>
+        <li><strong>Tránsito y transbordos:</strong> acceso no autorizado durante viaje marítimo o cambio de buque.</li>
+      </ul>
+      <h4>Hacia la madurez del sistema (Sesión 2 AEON)</h4>
+      <p>La pregunta clave en cada auditoría interna: <em>«¿Estamos confiando o estamos verificando?»</em>. Acciones recomendadas:</p>
+      <ol>
+        <li>Reforzar procedimiento de asociados de negocio con cláusulas de notificación de subcontratación.</li>
+        <li>Planificar simulacros (contaminación de carga y ciberataque).</li>
+        <li>Incorporar controles ISO 27001 Anexo A en la auditoría del Capítulo 8.</li>
+        <li>Exigir evidencia fotográfica y registros firmados en inspección de contenedores.</li>
+      </ol>`
     }
   ]
 },
@@ -446,6 +519,65 @@ const MODULOS = [
       <p>Sistemas de control (8.1), políticas y contraseñas con cambio periódico (8.2), plan de contingencia de sistemas (8.5) y centro de cómputo protegido con acceso restringido (8.6). Clasificación de activos: información, físicos, servicios de TI y humanos.</p>
       <h4>Entrenamiento (Cap. 9)</h4>
       <p>Inducción/reinducción (9.1), capacitación especializada (9.2), política preventiva de alcohol y drogas (9.3) y <strong>Plan Maestro de Emergencia</strong> con simulacros (9.4).</p>`
+    },
+    {
+      titulo: "6.6 Las 7 actividades ilícitas que debe prevenir el OEA (AEON · Sesión 4)",
+      html: `
+      <p>La Resolución 15 de 2016 y la Res. 67 exigen que la política de gestión de la seguridad documente la prevención de las <strong>siete actividades ilícitas</strong> siguientes. El auditor interno debe verificar que estén identificadas en la matriz de riesgos (MARM) y en los procedimientos del SGCS:</p>
+      <ol>
+        <li><strong>Lavado de activos</strong></li>
+        <li><strong>Contrabando</strong> (abierto y técnico)</li>
+        <li><strong>Tráfico de estupefacientes</strong></li>
+        <li><strong>Tráfico de sustancias para el procesamiento de narcóticos</strong> (precursores y preprecursores)</li>
+        <li><strong>Terrorismo</strong></li>
+        <li><strong>Financiación del terrorismo</strong></li>
+        <li><strong>Tráfico de armas</strong></li>
+      </ol>
+      <div class="callout callout-key">Además de prevenirlas, la empresa debe definir sus <strong>áreas críticas</strong> (Req. 1.11) y demostrar que los controles están operando, no solo documentados.</div>`
+    },
+    {
+      titulo: "6.7 Caso «Exportadora Ficticia S.A.S.» — análisis normativo (AEON · Sesión 4B)",
+      html: `
+      <p>Caso práctico AEON: una exportadora utiliza un operador logístico <strong>sin certificación OEA</strong>, sin visitas de seguimiento en 3 años y con evaluación documental desactualizada (2 años).</p>
+      <h4>Requisitos incumplidos</h4>
+      <table class="tbl">
+        <tr><th>Capítulo / Numeral</th><th>Falla identificada</th></tr>
+        <tr><td>Cap. 2 · Req. 2.1</td><td>Sin procedimientos documentados de selección, evaluación y conocimiento continuo del asociado.</td></tr>
+        <tr><td>Cap. 1 · Req. 1.4</td><td>Falta manifestación firmada de cumplimiento de seguridad del operador no OEA.</td></tr>
+        <tr><td>Cap. 1 · Req. 1.5</td><td>Sin visitas de vinculación ni visitas bienales documentadas.</td></tr>
+        <tr><td>Cap. 1 · Req. 1.6</td><td>No se exige plan de contingencia al operador logístico.</td></tr>
+        <tr><td>Cap. 6 · Req. 6.13</td><td>Sin evidencia de supervisión del transportador terrestre.</td></tr>
+      </table>
+      <h4>Documentos faltantes como evidencia</h4>
+      <ul>
+        <li>Informes de visitas de seguridad bienales.</li>
+        <li>Manifestación de cumplimiento de seguridad firmada.</li>
+        <li>Evaluación de riesgo actualizada del asociado.</li>
+        <li>Listas de chequeo, auditorías e informes de supervisión.</li>
+        <li>Plan de contingencia del proveedor.</li>
+      </ul>
+      <h4>Riesgos identificados</h4>
+      <p>Contaminación de carga, hurto, sanciones legales, cancelación de la autorización OEA y daño reputacional irreparable.</p>
+      <div class="callout callout-warning"><strong>Lección para Colombian Mint:</strong> la debida diligencia sobre asociados de negocio no es un trámite documental; es la primera barrera contra la contaminación ilícita.</div>`
+    },
+    {
+      titulo: "6.8 Caso del «precinto no correspondiente» (AEON · Sesión 5)",
+      html: `
+      <p>Caso de estudio sobre discrepancia entre el número del sello instalado y el registrado en documentos de embarque.</p>
+      <h4>Requisitos vulnerados</h4>
+      <ul>
+        <li><strong>Req. 3.4:</strong> procedimiento y registro de colocación de sellos (quién, cuándo, número, placa, firma).</li>
+        <li><strong>Req. 3.8:</strong> registro documental de la inspección de 7 puntos con responsable identificado.</li>
+        <li><strong>Req. 3.5:</strong> cierre y sellado correcto en punto de llenado.</li>
+        <li><strong>Req. 6.13:</strong> supervisión del transportador desde el llenado.</li>
+      </ul>
+      <h4>Controles que faltaron antes del despacho</h4>
+      <ol>
+        <li>Inspección de 7 puntos documentada.</li>
+        <li>Bitácora de entrega e instalación del sello ISO 17712.</li>
+        <li>Doble verificación sello físico vs. Declaración de Exportación / Bill of Lading.</li>
+        <li>Supervisión directa del proceso de llenado y sellado.</li>
+      </ol>`
     }
   ]
 },
@@ -515,6 +647,89 @@ const MODULOS = [
       <p>El <strong>programa de auditorías</strong> define: propósito, alcance, criterios, recursos, cronograma, auditados y auditores. Se planifica a lo largo del año (cronograma tipo Gantt por norma).</p>
       <p>Quien gestiona el programa debe tener conocimiento y habilidad en: 1) principios, procedimientos y métodos; 2) normas y documentos de referencia; 3) actividades, productos y procesos; 4) requisitos legales; 5) clientes, proveedores y partes interesadas.</p>
       <p>Etapas (cláusula 5): objetivos del programa → determinación y evaluación de riesgos → establecimiento → implementación → seguimiento → revisión y mejora.</p>`
+    },
+    {
+      titulo: "7.6 Ciclo PHVA aplicado a las auditorías (Calidad · Encuentro 4-5)",
+      html: `
+      <p>La formación de auditores internos (Gloria Díaz · Calidad Consultora, 2026) vincula el ciclo <strong>Planear–Hacer–Verificar–Actuar (PHVA)</strong> con la gestión de auditorías, alineado con la GTC-ISO 19011:2018:</p>
+      <table class="tbl">
+        <tr><th>Fase PHVA</th><th>Actividades de auditoría</th></tr>
+        <tr><td><strong>Planear</strong></td><td>Definir objetivos del programa, alcance, criterios, recursos, cronograma y riesgos de la auditoría.</td></tr>
+        <tr><td><strong>Hacer</strong></td><td>Ejecutar la auditoría: apertura, revisión documental, entrevistas, observación en campo, recopilación de evidencia.</td></tr>
+        <tr><td><strong>Verificar</strong></td><td>Evaluar evidencias frente a criterios; analizar hallazgos; preparar informe y conclusiones.</td></tr>
+        <tr><td><strong>Actuar</strong></td><td>Seguimiento a acciones correctivas, verificación de eficacia y mejora del programa de auditorías.</td></tr>
+      </table>
+      <div class="callout callout-info">La auditoría interna OEA no es un evento aislado: es un proceso cíclico de mejora continua del Sistema de Gestión en Control y Seguridad.</div>`
+    },
+    {
+      titulo: "7.7 Atributos personales del auditor (GTC 19011 · §7.2)",
+      html: `
+      <p>Además de los siete principios, la norma describe <strong>atributos personales</strong> que cualifican la competencia del auditor. Autoevalúe fortalezas y oportunidades de mejora:</p>
+      <div class="grid-2">
+        <ul>
+          <li><strong>Ético:</strong> imparcial, sincero, honesto y discreto.</li>
+          <li><strong>Mentalidad abierta:</strong> dispuesto a considerar ideas alternativas.</li>
+          <li><strong>Diplomático:</strong> tacto en las relaciones con las personas.</li>
+          <li><strong>Observador:</strong> consciente del entorno físico y las actividades.</li>
+          <li><strong>Perspicaz:</strong> capaz de comprender situaciones complejas.</li>
+          <li><strong>Versátil:</strong> se adapta a diferentes contextos.</li>
+          <li><strong>Tenaz:</strong> persistente y orientado al logro de objetivos.</li>
+        </ul>
+        <ul>
+          <li><strong>Decidido:</strong> conclusiones oportunas basadas en análisis lógico.</li>
+          <li><strong>Seguro de sí mismo:</strong> actúa con independencia y colabora eficazmente.</li>
+          <li><strong>Responsable:</strong> actúa con ética aunque genere desacuerdo.</li>
+          <li><strong>Abierto a la mejora:</strong> aprende de cada auditoría.</li>
+          <li><strong>Culturalmente sensible:</strong> respeta la cultura del auditado.</li>
+          <li><strong>Colaborador:</strong> interactúa eficazmente con equipo y auditado.</li>
+        </ul>
+      </div>`
+    },
+    {
+      titulo: "7.8 Roles y responsabilidades del equipo auditor (GTC 19011)",
+      html: `
+      <table class="tbl">
+        <tr><th>Rol</th><th>Responsabilidades clave</th></tr>
+        <tr><td><strong>Cliente de auditoría</strong></td><td>Establece objetivos del programa alineados al direccionamiento estratégico; identifica riesgos; provee recursos; solicita conclusiones.</td></tr>
+        <tr><td><strong>Auditor líder</strong></td><td>Elabora el plan de auditoría; orienta al equipo; media conflictos; concluye en términos de adecuación, conveniencia y eficacia.</td></tr>
+        <tr><td><strong>Auditor</strong></td><td>Prepara la auditoría; aplica principios y competencias; ejecuta según el plan; recopila evidencia objetiva.</td></tr>
+        <tr><td><strong>Experto técnico</strong></td><td>Aporta conocimiento especializado del proceso auditado; prepara y entrega informe según criterios.</td></tr>
+        <tr><td><strong>Auditor observador</strong></td><td>Observa sin interferir; toma notas; manifiesta inquietudes al finalizar (formación y calificación).</td></tr>
+        <tr><td><strong>Auditado</strong></td><td>Suministra información documentada oportuna; implementa correctivos para eliminar desviaciones.</td></tr>
+      </table>`
+    },
+    {
+      titulo: "7.9 Construcción del plan de auditoría (GTC 19011 · §6.3)",
+      html: `
+      <p>El plan de auditoría traduce el programa en acciones concretas para una visita específica:</p>
+      <h4>Objetivo</h4>
+      <p>Define <em>qué</em> se va a lograr con la auditoría (ej.: verificar cumplimiento del Capítulo 3 en GEX antes de la revalidación OEA).</p>
+      <h4>Alcance</h4>
+      <p>Debe ser coherente con el programa. Incluye ubicación, funciones, actividades, procesos auditados y periodo cubierto.</p>
+      <h4>Criterios de auditoría</h4>
+      <p>Referencia frente a la cual se compara la evidencia: políticas, procedimientos, Resolución 15/67, objetivos de desempeño, requisitos legales, contexto y riesgos del auditado.</p>
+      <h4>Posibles objetivos de una auditoría (GTC 19011)</h4>
+      <ul>
+        <li>Determinar conformidad del SGCS con los requisitos OEA.</li>
+        <li>Evaluar la capacidad del auditado para cumplir requisitos legales y contractuales.</li>
+        <li>Evaluar la eficacia del SGCS en alcanzar objetivos.</li>
+        <li>Identificar oportunidades de mejora del sistema y su desempeño.</li>
+        <li>Evaluar la capacidad del auditado para responder a riesgos y oportunidades.</li>
+      </ul>`
+    },
+    {
+      titulo: "7.10 Métodos de recopilación de evidencia (GTC 19011 · §6.4.3)",
+      html: `
+      <p>La evidencia de auditoría debe ser <strong>pertinente, verificable y suficiente</strong> para sustentar las conclusiones:</p>
+      <table class="tbl">
+        <tr><th>Método</th><th>Descripción</th><th>Ejemplo OEA</th></tr>
+        <tr><td>Entrevista</td><td>Diálogo estructurado con personal del auditado</td><td>Preguntar al guarda sobre protocolo de visitantes (Cap. 4)</td></tr>
+        <tr><td>Observación</td><td>Presencia directa de actividades y condiciones</td><td>Verificar inspección de 7 puntos en patio de contenedores</td></tr>
+        <tr><td>Muestreo</td><td>Selección representativa de registros o elementos</td><td>Revisar 10 bitácoras de sellado del último trimestre</td></tr>
+        <tr><td>Revisión documental</td><td>Análisis de procedimientos, registros e informes</td><td>Verificar MARM, procedimientos y evidencias de visitas a asociados</td></tr>
+        <tr><td>Análisis de datos</td><td>Estudio de tendencias, indicadores o reportes</td><td>Analizar incidentes de seguridad reportados en el año</td></tr>
+      </table>
+      <div class="callout callout-key"><strong>Regla de oro:</strong> lo que no está documentado no existe ante un auditor externo. Registre fecha, responsable, hallazgo y evidencia soporte.</div>`
     }
   ]
 },
@@ -583,6 +798,62 @@ const MODULOS = [
       html: `
       <p>Un <strong>plan de acción</strong> describe las tareas, responsables, recursos, plazos e indicadores necesarios para resolver un hallazgo.</p>
       <p>Estructura: definición, objetivo, acciones, responsable, recursos, plazos, indicadores y seguimiento.</p>`
+    },
+    {
+      titulo: "8.6 Estructura de hallazgos y redacción de no conformidades",
+      html: `
+      <p>La formación Calidad Consultora y AEON enfatiza una redacción clara, verificable y trazable a requisito normativo:</p>
+      <h4>Componentes de un hallazgo</h4>
+      <ol>
+        <li><strong>Identificación:</strong> código, fecha, auditor, proceso auditado.</li>
+        <li><strong>Requisito de referencia:</strong> numeral exacto (ej.: Res. 15 · Req. 3.8).</li>
+        <li><strong>Descripción objetiva:</strong> qué se observó, sin juicios personales.</li>
+        <li><strong>Evidencia objetiva:</strong> registros, fotos, entrevistas citadas.</li>
+        <li><strong>Clasificación:</strong> No Conformidad · Observación · Oportunidad de Mejora.</li>
+        <li><strong>Impacto en el SGCS/OEA:</strong> riesgo para la cadena de suministro.</li>
+        <li><strong>Acción requerida:</strong> correctiva, responsable y plazo.</li>
+      </ol>
+      <div class="callout callout-info"><strong>Ejemplo de redacción NC:</strong> «Durante la auditoría al proceso GEX (15/07/2025) se verificó que 3 de 5 contenedores revisados carecen de registro de inspección de 7 puntos (Req. 3.8 Res. 15). Evidencia: muestra de embarques EXP-2025-041, 042 y 044 sin formato FT-IC-XXXX archivado.»</div>`
+    },
+    {
+      titulo: "8.7 Informe de auditoría y seguimiento (GTC 19011 · §6.6)",
+      html: `
+      <p>El informe de auditoría es el producto formal que comunica resultados a la dirección y al auditado. Debe incluir:</p>
+      <ul>
+        <li>Identificación del auditado, fechas, auditores y alcance.</li>
+        <li>Criterios de auditoría utilizados.</li>
+        <li>Resumen del proceso de auditoría y limitaciones encontradas.</li>
+        <li>Conclusiones sobre conformidad y eficacia del SGCS.</li>
+        <li>Resumen de hallazgos clasificados por severidad.</li>
+        <li>Recomendaciones y acciones requeridas con plazos.</li>
+      </ul>
+      <h4>Seguimiento post-auditoría</h4>
+      <p>El auditor o el responsable del programa verifica la implementación y eficacia de las acciones correctivas. Si no se cierran a tiempo, escalar a la dirección. Puede requerirse re-auditoría focalizada.</p>`
+    },
+    {
+      titulo: "8.8 Simulacros de auditoría en campo (Calidad · Encuentros 4-5)",
+      html: `
+      <p>La formación 2026 incluye <strong>simulacros vivenciales</strong> como puente entre la teoría ISO 19011 y la práctica OEA:</p>
+      <h4>Antes del simulacro</h4>
+      <ul>
+        <li>Elaborar lista de verificación basada en requisitos OEA del proceso.</li>
+        <li>Definir roles: auditor líder, auditores, experto técnico, observador, auditado.</li>
+        <li>Comunicar alcance y criterios al área que será simulada.</li>
+      </ul>
+      <h4>Durante el simulacro</h4>
+      <ul>
+        <li>Realizar reunión de apertura con guion estándar.</li>
+        <li>Aplicar entrevista, observación y revisión documental.</li>
+        <li>El observador registra notas sin interferir.</li>
+        <li>Recopilar evidencia en tiempo real (fotos, registros, citas textuales).</li>
+      </ul>
+      <h4>Después del simulacro</h4>
+      <ul>
+        <li>Reunión de cierre con hallazgos y fortalezas.</li>
+        <li>Retroalimentación al equipo auditor sobre competencias demostradas.</li>
+        <li>Elaboración del informe y plan de acción.</li>
+      </ul>
+      <div class="callout callout-key">Los simulacros de emergencia (Cap. 9.4) y los simulacros de auditoría son complementarios: uno valida la respuesta operativa; el otro, la competencia del auditor interno.</div>`
     }
   ]
 },
@@ -651,6 +922,195 @@ const MODULOS = [
       </ul>
       </div>
       <p>Al completar este módulo, el auditor interno está preparado para apoyar a los procesos auditados, fortalecer el Sistema de Gestión en Control y Seguridad (SGCS) y mantener la acreditación OEA de C.I. Colombian Mint.</p>`
+    },
+    {
+      titulo: "9.5 Plan de acción post-formación y fuentes de referencia",
+      html: `
+      <h4>Acciones inmediatas recomendadas (AEON 2025 + Calidad 2026)</h4>
+      <table class="tbl">
+        <tr><th>Acción</th><th>Responsable sugerido</th><th>Plazo</th></tr>
+        <tr><td>Revisar procedimiento de asociados de negocio (subcontratación, visitas bienales)</td><td>GCP / GCV / GCM</td><td>30 días</td></tr>
+        <tr><td>Programar 2 simulacros (contaminación + ciberataque)</td><td>SRF / GTI / SST</td><td>Trimestre</td></tr>
+        <tr><td>Actualizar checklist Cap. 8 con controles ISO 27001 Anexo A</td><td>GTI / GMC</td><td>45 días</td></tr>
+        <tr><td>Validar bitácoras de sellos e inspección 7 puntos con evidencia fotográfica</td><td>GEX / SRF</td><td>Continuo</td></tr>
+        <tr><td>Completar autoevaluación de competencias del auditor (GTC 19011 §7.2)</td><td>Cada auditor interno</td><td>60 días</td></tr>
+      </table>
+      <h4>Fuentes oficiales de la formación integrada en esta plataforma</h4>
+      <ul>
+        <li><strong>AEON Consulting</strong> — Técnicas de Auditoría Interna OEA basada en ISO 19011:2018 (Sesiones 1–6, julio 2025).</li>
+        <li><strong>Calidad Consultora</strong> — Formación Auditores en Sistemas de Gestión / GTC-ISO 19011:2018 (Encuentros 1, 2, 4-5, 2026).</li>
+        <li><strong>Normativa:</strong> Resolución 15378 de 2016, Resolución 67 de 2016, Decreto 3568 de 2011.</li>
+        <li><strong>Referencia internacional:</strong> ISO 19011:2018 (GTC-ISO 19011:2018 en Colombia).</li>
+      </ul>
+      <div class="callout callout-key"><strong>Compromiso CAPTE 2.0:</strong> cada auditor interno de C.I. Colombian Mint es guardián activo de la cadena de suministro segura. La formación no termina con el diploma: continúa en cada auditoría, simulacro y verificación en campo.</div>
+      <p>Consulta los materiales originales en la sección <strong>Documentos PDF</strong> del panel principal.</p>`
+    }
+  ]
+},
+{
+  id: "m10",
+  titulo: "Módulo 10 · NTC ISO 9001:2015 y Sistemas de Gestión",
+  icono: "✅",
+  resumen: "Fundamentos del Sistema de Gestión de la Calidad (SGC), ciclo PHVA, requisitos 4–10 de la NTC ISO 9001:2015 y su vínculo con la auditoría interna OEA en Colombian Mint.",
+  lecciones: [
+    {
+      titulo: "10.1 Importancia de la calidad y el SGC en el auditor OEA",
+      html: `
+      <p>La formación de auditores internos de C.I. Colombian Mint (Calidad Consultora · Gloria Díaz, 2026) parte de una premisa: <strong>auditar OEA exige comprender cómo funciona un sistema de gestión</strong>. El Sistema de Gestión en Control y Seguridad (SGCS) y el Sistema de Gestión de la Calidad (SGC) comparten la misma lógica: requisitos documentados, evidencias verificables, mejora continua y enfoque basado en riesgos.</p>
+      <h4>Beneficios de la NTC ISO 9001:2015</h4>
+      <ul>
+        <li><strong>Planeación estratégica</strong> alineada con el contexto interno/externo y las partes interesadas.</li>
+        <li><strong>Satisfacción del cliente</strong> mediante identificación de riesgos y oportunidades.</li>
+        <li><strong>Estructura de alto nivel</strong> (Anexo SL) que permite alinear ISO 9001 con ISO 14001, ISO 45001, ISO 27001 e ISO 28000.</li>
+        <li><strong>Demostración de conformidad</strong> frente a requisitos del cliente, legales y reglamentarios.</li>
+      </ul>
+      <h4>Normas complementarias que debe conocer el auditor</h4>
+      <table class="tbl">
+        <tr><th>Norma</th><th>Propósito</th></tr>
+        <tr><td>ISO 9000</td><td>Fundamentos y vocabulario del SGC</td></tr>
+        <tr><td>ISO 9001</td><td>Requisitos del SGC certificable</td></tr>
+        <tr><td>ISO 9004</td><td>Gestión para el éxito sostenido (más allá del mínimo)</td></tr>
+        <tr><td>GTC-ISO 19011</td><td>Directrices para auditar sistemas de gestión</td></tr>
+      </table>
+      <div class="callout callout-info"><strong>Para el auditor OEA:</strong> cuando audita un proceso (GEX, GHM, GTI…), no solo verifica requisitos OEA: evalúa si el proceso opera con <em>control documental, competencias, indicadores y acciones correctivas</em> — pilares del SGC.</div>`
+    },
+    {
+      titulo: "10.2 Estructura de la NTC ISO 9001:2015 y ciclo PHVA",
+      html: `
+      <p>La NTC ISO 9001:2015 organiza sus requisitos en capítulos alineados con el ciclo <strong>Planear–Hacer–Verificar–Actuar (PHVA)</strong>:</p>
+      <table class="tbl">
+        <tr><th>Capítulo</th><th>Tema</th><th>Fase PHVA</th></tr>
+        <tr><td>4</td><td>Contexto de la organización</td><td>Planear</td></tr>
+        <tr><td>5</td><td>Liderazgo</td><td>Planear</td></tr>
+        <tr><td>6</td><td>Planificación</td><td>Planear</td></tr>
+        <tr><td>7</td><td>Soporte</td><td>Hacer</td></tr>
+        <tr><td>8</td><td>Operación</td><td>Hacer</td></tr>
+        <tr><td>9</td><td>Evaluación del desempeño</td><td>Verificar</td></tr>
+        <tr><td>10</td><td>Mejora</td><td>Actuar</td></tr>
+      </table>
+      <h4>Qué hace cada fase</h4>
+      <ul>
+        <li><strong>Planear:</strong> establecer objetivos del sistema y procesos; identificar riesgos y oportunidades; asignar recursos.</li>
+        <li><strong>Hacer:</strong> implementar lo planificado; operar procesos; gestionar recursos y comunicación.</li>
+        <li><strong>Verificar:</strong> seguimiento, medición, auditoría interna y revisión por la dirección.</li>
+        <li><strong>Actuar:</strong> acciones correctivas, mejora continua y actualización del sistema.</li>
+      </ul>
+      <p>El enfoque basado en procesos bajo PHVA se materializa en el <strong>mapa de procesos</strong> de Colombian Mint (GPE, GMC, GCP, GEX, etc.), que el auditor OEA recorre de forma transversal.</p>`
+    },
+    {
+      titulo: "10.3 Principios de la calidad (ISO 9000)",
+      html: `
+      <p>La ISO 9000 define siete principios de gestión de la calidad que orientan la implementación y la auditoría del SGC:</p>
+      <ol>
+        <li><strong>Enfoque al cliente</strong> — comprender necesidades actuales y futuras; esforzarse por superar expectativas.</li>
+        <li><strong>Liderazgo</strong> — la alta dirección establece unidad de propósito y dirección estratégica.</li>
+        <li><strong>Compromiso de las personas</strong> — personal competente, empoderado y comprometido.</li>
+        <li><strong>Enfoque a procesos</strong> — actividades entendidas y gestionadas como procesos interrelacionados.</li>
+        <li><strong>Mejora</strong> — enfoque permanente hacia mejora del desempeño.</li>
+        <li><strong>Toma de decisiones basada en evidencia</strong> — análisis de datos e información.</li>
+        <li><strong>Gestión de las relaciones</strong> — relaciones mutuamente beneficiosas con partes interesadas.</li>
+      </ol>
+      <div class="callout callout-key">En la auditoría interna OEA, cada principio tiene un espejo: «enfoque al cliente» se traduce en trazabilidad y cumplimiento; «toma de decisiones basada en evidencia» es el corazón de la ISO 19011.</div>`
+    },
+    {
+      titulo: "10.4 Requisitos 4–6: Contexto, Liderazgo y Planificación",
+      html: `
+      <h4>Capítulo 4 — Contexto de la organización</h4>
+      <ul>
+        <li><strong>4.1</strong> Comprensión del contexto interno y externo (DOFA, PESTEL).</li>
+        <li><strong>4.2</strong> Necesidades y expectativas de las partes interesadas (clientes, DIAN, empleados, proveedores).</li>
+        <li><strong>4.3</strong> Alcance del SGC: límites y aplicabilidad de requisitos.</li>
+        <li><strong>4.4</strong> SGC y sus procesos: entradas, salidas, secuencia, interacción y criterios de control.</li>
+      </ul>
+      <h4>Capítulo 5 — Liderazgo</h4>
+      <ul>
+        <li><strong>5.1</strong> Liderazgo y compromiso de la alta dirección con el SGC.</li>
+        <li><strong>5.2</strong> Política de la calidad: apropiada, comunicada y disponible.</li>
+        <li><strong>5.3</strong> Roles, responsabilidades y autoridades definidos y comunicados.</li>
+      </ul>
+      <h4>Capítulo 6 — Planificación</h4>
+      <ul>
+        <li><strong>6.1</strong> Acciones para abordar riesgos y oportunidades (vinculación directa con MARM OEA).</li>
+        <li><strong>6.2</strong> Objetivos de la calidad: medibles, coherentes con la política, monitoreados y comunicados.</li>
+        <li><strong>6.3</strong> Planificación de cambios en el SGC de manera controlada.</li>
+      </ul>
+      <p>Los objetivos de la calidad deben responder: <em>qué se hará, qué recursos, quién es responsable, cuándo finaliza y cómo se evaluarán los resultados</em> — la misma lógica SMART aplicada en la formación OEA.</p>`
+    },
+    {
+      titulo: "10.5 Requisitos 7–8: Soporte y Operación",
+      html: `
+      <h4>Capítulo 7 — Soporte</h4>
+      <table class="tbl">
+        <tr><th>Requisito</th><th>Qué auditar</th><th>Conexión OEA</th></tr>
+        <tr><td>7.1 Recursos</td><td>Personas, infraestructura, ambiente, equipos de medición, conocimiento</td><td>Cap. 5 Personal, Cap. 7 Física</td></tr>
+        <tr><td>7.2 Competencia</td><td>Educación, formación, experiencia; registros de competencia</td><td>Cap. 9 Entrenamiento</td></tr>
+        <tr><td>7.3 Toma de conciencia</td><td>Personal conoce política, objetivos y su contribución</td><td>Cap. 9 Conciencia de amenazas</td></tr>
+        <tr><td>7.4 Comunicación</td><td>Qué, cuándo, con quién y cómo se comunica</td><td>Protocolos de reporte OEA</td></tr>
+        <tr><td>7.5 Información documentada</td><td>Creación, actualización y control de documentos y registros</td><td>Cap. 6 Control documental</td></tr>
+      </table>
+      <h4>Capítulo 8 — Operación</h4>
+      <p>Planificación y control operacional: requisitos para productos/servicios, diseño, proveedores externos, producción, liberación y control de salidas no conformes. En Colombian Mint, la operación de comercio exterior (GEX, GCM, GTR) debe demostrar trazabilidad verificable — no solo procedimientos en papel.</p>`
+    },
+    {
+      titulo: "10.6 Requisitos 9–10: Evaluación del desempeño y Mejora",
+      html: `
+      <h4>Capítulo 9 — Evaluación del desempeño</h4>
+      <ul>
+        <li><strong>9.1 Seguimiento y medición:</strong> indicadores de satisfacción del cliente y desempeño de procesos.</li>
+        <li><strong>9.2 Auditoría interna:</strong> programada a intervalos planificados; conformidad con ISO 9001 y el propio SGC. <em>Aquí converge la ISO 19011.</em></li>
+        <li><strong>9.3 Revisión por la dirección:</strong> análisis de entradas (auditorías, NC, indicadores) y salidas (decisiones, recursos, mejoras).</li>
+      </ul>
+      <h4>Capítulo 10 — Mejora</h4>
+      <ul>
+        <li><strong>10.1 Generalidades:</strong> determinar oportunidades de mejora e implementar acciones.</li>
+        <li><strong>10.2 No conformidad y acción correctiva:</strong> control de NC, análisis de causa raíz, acciones y verificación de eficacia.</li>
+        <li><strong>10.3 Mejora continua:</strong> perfeccionamiento del SGC de forma permanente.</li>
+      </ul>
+      <div class="callout callout-warning"><strong>Preguntas clave del auditor:</strong> ¿Existe programa de auditorías internas? ¿Las NC OEA tienen causa raíz y verificación de eficacia? ¿La dirección revisa el desempeño del SGCS periódicamente?</div>`
+    },
+    {
+      titulo: "10.7 Cómo interpretar la norma: «debe», «debería» y «puede»",
+      html: `
+      <p>La formación Calidad Consultora enfatiza la lectura normativa precisa — habilidad esencial para redactar hallazgos sin ambigüedad:</p>
+      <table class="tbl">
+        <tr><th>Modal verbal</th><th>Significado</th><th>Implicación para auditoría</th></tr>
+        <tr><td><strong>Debe</strong></td><td>Requisito obligatorio</td><td>Incumplimiento = No Conformidad</td></tr>
+        <tr><td><strong>Debería</strong></td><td>Recomendación</td><td>Observación u Oportunidad de Mejora</td></tr>
+        <tr><td><strong>Puede</strong></td><td>Permiso o posibilidad</td><td>La organización decide; evaluar pertinencia</td></tr>
+      </table>
+      <h4>Ejercicio de interpretación (como en la formación vivencial)</h4>
+      <p>Al auditar un numeral, identifique:</p>
+      <ol>
+        <li>¿Cuál es el numeral exacto de la norma?</li>
+        <li>¿Es «debe», «debería» o «puede»?</li>
+        <li>¿Quién tiene la obligación de cumplirlo en Colombian Mint?</li>
+        <li>¿Qué evidencia objetiva demuestra su cumplimiento?</li>
+      </ol>
+      <p>Este mismo método se aplica a los numerales de la Resolución 15 de 2016 (OEA): Req. 3.8 «debe dejar registro documental» es auditable con evidencia concreta.</p>`
+    },
+    {
+      titulo: "10.8 Vinculación ISO 9001 – SGCS OEA – auditoría en Colombian Mint",
+      html: `
+      <p>El Módulo 10 cierra el puente entre la formación en calidad (ISO 9001) y la auditoría OEA:</p>
+      <table class="tbl">
+        <tr><th>Concepto ISO 9001</th><th>Equivalente en SGCS / OEA</th></tr>
+        <tr><td>Política de calidad (5.2)</td><td>Política de gestión de la seguridad (Req. 1.1)</td></tr>
+        <tr><td>Riesgos y oportunidades (6.1)</td><td>MARM y matriz de riesgos OEA</td></tr>
+        <tr><td>Competencia (7.2)</td><td>Formación Cap. 9 + perfil auditor interno</td></tr>
+        <tr><td>Información documentada (7.5)</td><td>Procedimientos y registros OEA</td></tr>
+        <tr><td>Auditoría interna (9.2)</td><td>Programa de auditorías SGCS (ISO 19011)</td></tr>
+        <tr><td>Acción correctiva (10.2)</td><td>Plan de acción ante hallazgos OEA/DIAN</td></tr>
+      </table>
+      <h4>Agenda académica 2026 — Formación auditores internos</h4>
+      <p>La ruta formativa de Calidad Consultora articula: Encuentros 1-2 (ISO 9001) → Encuentro 3 (ISO 19011) → Encuentros 4-5 (simulacros y hallazgos). Esta plataforma integra todo el recorrido en 10 módulos + documentos PDF originales.</p>
+      <div class="callout callout-key"><strong>Conclusión del Módulo 10:</strong> un auditor interno OEA maduro domina tres lenguajes — requisitos OEA (Res. 15/67), gestión de calidad (ISO 9001) y metodología de auditoría (ISO 19011) — y los aplica de forma integrada en los 15 procesos de C.I. Colombian Mint.</div>`
+    },
+    {
+      titulo: "10.9 Centro de documentos PDF — materiales originales",
+      html: `
+      <p>Esta lección centraliza el acceso a las <strong>memorias y presentaciones originales</strong> de la formación. Puede abrirlos en una nueva pestaña del navegador o descargarlos para estudio offline.</p>
+      <div id="lec-docs-embed" class="doc-embed"></div>
+      <p class="muted">Los PDF también están disponibles en el panel principal → <strong>Documentos PDF</strong>.</p>`
     }
   ]
 }

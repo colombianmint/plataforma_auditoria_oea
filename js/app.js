@@ -98,6 +98,84 @@ function cursoCompleto(estado){
   return MODULOS.every(m => moduloCompleto(estado, m.id));
 }
 
+/* ----------------------- Biblioteca / búsqueda ----------------------- */
+function totalLecciones(){
+  return MODULOS.reduce((n,m)=> n + m.lecciones.length, 0);
+}
+function stripHtml(html){
+  return String(html).replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
+}
+function buscarLecciones(term){
+  const t = String(term||"").toLowerCase().trim();
+  const out = [];
+  MODULOS.forEach(mod=>{
+    mod.lecciones.forEach((lec,i)=>{
+      const hay = (mod.titulo + " " + lec.titulo + " " + stripHtml(lec.html)).toLowerCase();
+      if (!t || hay.includes(t)) out.push({ mod, idx:i, lec });
+    });
+  });
+  return out;
+}
+function resaltarTexto(texto, term){
+  if (!term) return esc(texto);
+  const re = new RegExp("("+term.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi");
+  return esc(texto).replace(re,"<mark>$1</mark>");
+}
+function indiceLeccion(modId, idx){
+  let n = 0;
+  for (const m of MODULOS){
+    if (m.id === modId) return n + idx + 1;
+    n += m.lecciones.length;
+  }
+  return idx + 1;
+}
+
+/* ----------------------- Documentos PDF ----------------------- */
+function buscarDocumentos(term, fuente){
+  const t = String(term||"").toLowerCase().trim();
+  const f = fuente || "todos";
+  return DOCUMENTOS.filter(doc=>{
+    if (f !== "todos" && doc.fuente !== f) return false;
+    const hay = (doc.titulo + " " + doc.fuente + " " + doc.capacitador + " " + doc.tags.join(" ")).toLowerCase();
+    return !t || hay.includes(t);
+  });
+}
+function htmlTarjetaDocumento(doc){
+  const modLabels = (doc.modulos||[]).map(id=>{
+    const m = MODULOS.find(x=>x.id===id);
+    return m ? m.icono + " " + m.id.toUpperCase() : id;
+  }).join(" · ");
+  const url = esc(doc.archivo);
+  const fname = doc.archivo.split("/").pop();
+  return `<article class="doc-card">
+    <div class="doc-icon">📄</div>
+    <div class="doc-body">
+      <h3>${esc(doc.titulo)}</h3>
+      <p class="doc-meta"><strong>${esc(doc.fuente)}</strong> · ${esc(doc.capacitador)} · ${esc(doc.fecha)}${doc.paginas?` · ${doc.paginas} págs.`:""}</p>
+      ${modLabels ? `<p class="doc-mods">${modLabels}</p>` : ""}
+      <div class="doc-tags">${doc.tags.map(t=>`<span class="tag-chip tag-static">${esc(t)}</span>`).join("")}</div>
+    </div>
+    <div class="doc-actions">
+      <a class="btn btn-primary" href="${url}" target="_blank" rel="noopener noreferrer">👁️ Abrir PDF</a>
+      <a class="btn btn-ghost" href="${url}" download="${esc(fname)}">⬇️ Descargar</a>
+    </div>
+  </article>`;
+}
+function htmlGrupoDocumentos(docs, titulo){
+  if (!docs.length) return "";
+  return `<div class="doc-group"><h3>${esc(titulo)} <span class="pill pill-soft">${docs.length}</span></h3><div class="doc-grid">${docs.map(htmlTarjetaDocumento).join("")}</div></div>`;
+}
+function renderDocumentosEnContenedor(container, term, fuente){
+  if (!container) return;
+  const docs = buscarDocumentos(term, fuente);
+  const aeon = docs.filter(d=>d.fuente==="AEON Consulting");
+  const cal = docs.filter(d=>d.fuente==="Calidad Consultora");
+  container.innerHTML = docs.length
+    ? htmlGrupoDocumentos(aeon, "AEON Consulting — Técnicas de Auditoría OEA 2025")
+      + htmlGrupoDocumentos(cal, "Calidad Consultora — Formación Auditores 2026")
+    : `<p class="muted bib-empty">No hay documentos que coincidan con la búsqueda.</p>`;
+}
+
 /* ===================================================================
    ENRUTADOR / RENDER
    =================================================================== */
@@ -143,11 +221,12 @@ function vistaLogin(){
   </section>
   <section class="card">
     <h2>Selecciona tu nombre de Auditor Interno</h2>
-    <p class="muted">Tu progreso se guarda automáticamente en este equipo. Para obtener el diploma debes ver todo el contenido y aprobar las evaluaciones con un mínimo del <strong>${Math.round(CONFIG.umbralAprobacion*100)}%</strong>.</p>
+    <p class="muted">Tu progreso se guarda automáticamente en este equipo. Consulta libremente los <strong>${totalLecciones()} capítulos</strong> desde la biblioteca. Para obtener el diploma debes ver todo el contenido y aprobar las evaluaciones con un mínimo del <strong>${Math.round(CONFIG.umbralAprobacion*100)}%</strong>.</p>
     <div class="auditor-grid">${tarjetas}</div>
   </section>
   <section class="card info-curso">
     <h3>¿Qué incluye el curso?</h3>
+    <p class="muted">${MODULOS.length} módulos · ${totalLecciones()} capítulos · ${DOCUMENTOS.length} documentos PDF descargables (AEON + Calidad Consultora)</p>
     <div class="modgrid-mini">
       ${MODULOS.map(m=>`<div class="mini-mod"><span>${m.icono}</span><div><strong>${esc(m.titulo)}</strong></div></div>`).join("")}
     </div>
@@ -180,16 +259,14 @@ function vistaDashboard(){
     const compl = moduloCompleto(est, m.id);
     const datos = est.modulos[m.id];
     const mejor = datos && typeof datos.mejor==="number" ? Math.round(datos.mejor*100) : null;
-    const bloqueado = idx>0 && !moduloCompleto(est, MODULOS[idx-1].id);
     let estadoTxt = compl ? `<span class="pill pill-ok">Completado · ${mejor}%</span>`
       : aprobado ? `<span class="pill pill-warn">Evaluación OK · falta contenido</span>`
-      : bloqueado ? `<span class="pill pill-lock">🔒 Completa el módulo anterior</span>`
       : `<span class="pill">En progreso · ${leidas}/${total} lecciones</span>`;
-    return `<button class="mod-card ${compl?'mc-done':''} ${bloqueado?'mc-lock':''}" data-mod="${m.id}" ${bloqueado?'disabled':''}>
+    return `<button class="mod-card ${compl?'mc-done':''}" data-mod="${m.id}">
       <div class="mc-top"><span class="mc-icon">${m.icono}</span>${compl?'<span class="mc-check">✓</span>':''}</div>
       <h3>${esc(m.titulo)}</h3>
       <p class="mc-res">${esc(m.resumen)}</p>
-      <div class="mc-foot">${estadoTxt}</div>
+      <div class="mc-foot">${estadoTxt}<span class="pill pill-soft">${total} capítulos</span></div>
     </button>`;
   }).join("");
 
@@ -215,17 +292,143 @@ function vistaDashboard(){
   <section class="card">
     <div class="card-head">
       <h2>Módulos del curso</h2>
-      ${diploma}
+      <div class="head-actions">
+        <button class="btn btn-primary" id="btnBiblioteca">📚 Biblioteca · ${totalLecciones()} capítulos</button>
+        <button class="btn btn-green" id="btnDocumentos">📄 Documentos PDF · ${DOCUMENTOS.length}</button>
+        ${diploma}
+      </div>
     </div>
-    <p class="muted">Avanza en orden. Cada módulo requiere <strong>leer todo el contenido</strong> y <strong>aprobar la evaluación</strong> (${CONFIG.preguntasPorQuiz} preguntas, mínimo ${Math.round(CONFIG.umbralAprobacion*100)}%).</p>
+    <p class="muted">Todos los capítulos están disponibles para consulta libre. Para el diploma debes <strong>leer todo el contenido</strong> y <strong>aprobar las evaluaciones</strong> (${CONFIG.preguntasPorQuiz} preguntas, mínimo ${Math.round(CONFIG.umbralAprobacion*100)}%).</p>
     <div class="mod-grid">${tarjetas}</div>
   </section>`;
 
   document.querySelectorAll(".mod-card").forEach(b=>{
-    if (!b.disabled) b.addEventListener("click",()=> vistaModulo(b.dataset.mod));
+    b.addEventListener("click",()=> vistaModulo(b.dataset.mod));
   });
+  const bb = $("#btnBiblioteca");
+  if (bb) bb.addEventListener("click", vistaBiblioteca);
+  const bd2 = $("#btnDocumentos");
+  if (bd2) bd2.addEventListener("click", vistaDocumentos);
   const bd = $("#btnDiploma");
   if (bd && !bd.disabled) bd.addEventListener("click", vistaDiploma);
+}
+
+/* ----------------------- Vista: Biblioteca ----------------------- */
+function vistaBiblioteca(termInicial){
+  setTopbar();
+  const est = estadoAuditor(auditorActual);
+  let term = termInicial || "";
+  const renderLista = ()=>{
+    const items = buscarLecciones(term);
+    const agrupado = {};
+    items.forEach(it=>{
+      if (!agrupado[it.mod.id]) agrupado[it.mod.id] = { mod:it.mod, lecciones:[] };
+      agrupado[it.mod.id].lecciones.push(it);
+    });
+    const bloques = Object.values(agrupado).map(g=>{
+      const filas = g.lecciones.map(({mod, idx, lec})=>{
+        const key = `${mod.id}_${idx}`;
+        const leida = !!est.lecciones[key];
+        const num = indiceLeccion(mod.id, idx);
+        return `<button class="bib-row ${leida?'bib-done':''}" data-mod="${mod.id}" data-lec="${idx}">
+          <span class="bib-num">${leida?'✓':num}</span>
+          <span class="bib-body">
+            <strong>${resaltarTexto(lec.titulo, term)}</strong>
+            <small>${esc(mod.titulo)}</small>
+          </span>
+          <span class="bib-go">›</span>
+        </button>`;
+      }).join("");
+      return `<div class="bib-mod">
+        <div class="bib-mod-head"><span>${g.mod.icono}</span><strong>${esc(g.mod.titulo)}</strong><span class="pill pill-soft">${g.lecciones.length}</span></div>
+        <div class="bib-list">${filas}</div>
+      </div>`;
+    }).join("");
+
+    $("#bibResultados").innerHTML = items.length
+      ? bloques
+      : `<p class="muted bib-empty">No se encontraron capítulos para «${esc(term)}». Prueba con «ISO 19011», «sellos», «asociados» o «PHVA».</p>`;
+    $("#bibCount").textContent = `${items.length} de ${totalLecciones()} capítulos`;
+
+    document.querySelectorAll(".bib-row").forEach(b=>{
+      b.addEventListener("click",()=> vistaLeccion(b.dataset.mod, parseInt(b.dataset.lec,10), "bib"));
+    });
+  };
+
+  $("#app").innerHTML = `
+  <button class="btn btn-ghost btn-back" id="volver">‹ Volver al panel</button>
+  <section class="card bib-hero">
+    <h1>📚 Biblioteca de formación OEA</h1>
+    <p class="muted">Consulta libre de los <strong>${totalLecciones()} capítulos</strong> integrados de AEON Consulting, Calidad Consultora (ISO 19011) y contenido OEA. Usa la búsqueda para localizar temas específicos.</p>
+    <div class="bib-search-wrap">
+      <input type="search" class="bib-search" id="bibSearch" placeholder="Buscar: ISO 19011, 7 puntos, ketamina, PHVA, hallazgos…" value="${esc(term)}" autocomplete="off">
+      <span class="bib-count" id="bibCount"></span>
+    </div>
+    <div class="bib-tags">
+      ${["ISO 19011","ISO 9001","OEA","7 puntos","sellos","asociados","PHVA","hallazgos","simulacro","C-TPAT","riesgo"].map(t=>
+        `<button type="button" class="tag-chip" data-tag="${esc(t)}">${esc(t)}</button>`).join("")}
+      <button type="button" class="tag-chip tag-chip-docs" id="bibToDocs">📄 Ver PDFs originales</button>
+    </div>
+  </section>
+  <section class="card">
+    <div id="bibResultados"></div>
+  </section>`;
+
+  $("#volver").addEventListener("click", vistaDashboard);
+  const inp = $("#bibSearch");
+  inp.addEventListener("input", ()=>{ term = inp.value; renderLista(); });
+  document.querySelectorAll(".tag-chip").forEach(chip=>{
+    if (chip.id === "bibToDocs") return;
+    chip.addEventListener("click",()=>{ term = chip.dataset.tag; inp.value = term; renderLista(); inp.focus(); });
+  });
+  const btd = $("#bibToDocs");
+  if (btd) btd.addEventListener("click", ()=> vistaDocumentos(term));
+  renderLista();
+  window.scrollTo(0,0);
+}
+
+/* ----------------------- Vista: Documentos PDF ----------------------- */
+function vistaDocumentos(termInicial, fuenteInicial){
+  setTopbar();
+  let term = termInicial || "";
+  let fuente = fuenteInicial || "todos";
+
+  const render = ()=>{
+    const cont = $("#docResultados");
+    renderDocumentosEnContenedor(cont, term, fuente);
+    const n = buscarDocumentos(term, fuente).length;
+    $("#docCount").textContent = `${n} de ${DOCUMENTOS.length} documentos`;
+  };
+
+  $("#app").innerHTML = `
+  <button class="btn btn-ghost btn-back" id="volver">‹ Volver al panel</button>
+  <section class="card bib-hero">
+    <h1>📄 Documentos PDF de formación</h1>
+    <p class="muted">Memorias y presentaciones originales de <strong>AEON Consulting</strong> (julio 2025) y <strong>Calidad Consultora</strong> (2026). Ábralos en el navegador o descárguelos para consulta offline.</p>
+    <div class="bib-search-wrap">
+      <input type="search" class="bib-search" id="docSearch" placeholder="Buscar por tema: ISO 9001, ketamina, FRIOFORT, hallazgos…" value="${esc(term)}" autocomplete="off">
+      <span class="bib-count" id="docCount"></span>
+    </div>
+    <div class="doc-filters">
+      <button type="button" class="tag-chip doc-filter ${fuente==='todos'?'tag-active':''}" data-fuente="todos">Todos</button>
+      <button type="button" class="tag-chip doc-filter ${fuente==='AEON Consulting'?'tag-active':''}" data-fuente="AEON Consulting">AEON · OEA 2025</button>
+      <button type="button" class="tag-chip doc-filter ${fuente==='Calidad Consultora'?'tag-active':''}" data-fuente="Calidad Consultora">Calidad · 2026</button>
+    </div>
+  </section>
+  <section class="card"><div id="docResultados"></div></section>`;
+
+  $("#volver").addEventListener("click", vistaDashboard);
+  const inp = $("#docSearch");
+  inp.addEventListener("input", ()=>{ term = inp.value; render(); });
+  document.querySelectorAll(".doc-filter").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      fuente = btn.dataset.fuente;
+      document.querySelectorAll(".doc-filter").forEach(b=>b.classList.toggle("tag-active", b.dataset.fuente===fuente));
+      render();
+    });
+  });
+  render();
+  window.scrollTo(0,0);
 }
 
 /* ----------------------- Vista: Módulo ----------------------- */
@@ -270,30 +473,40 @@ function vistaModulo(modId){
 
   $("#volver").addEventListener("click", vistaDashboard);
   document.querySelectorAll(".leccion-row").forEach(b=>{
-    b.addEventListener("click",()=> vistaLeccion(modId, parseInt(b.dataset.lec,10)));
+    b.addEventListener("click",()=> vistaLeccion(modId, parseInt(b.dataset.lec,10), "mod"));
   });
   const be = $("#btnEval");
   if (be && !be.disabled) be.addEventListener("click",()=> iniciarQuiz(modId));
 }
 
 /* ----------------------- Vista: Lección ----------------------- */
-function vistaLeccion(modId, idx){
+function vistaLeccion(modId, idx, origen){
   const mod = MODULOS.find(m=>m.id===modId);
   const lec = mod.lecciones[idx];
   const est = estadoAuditor(auditorActual);
-  // marcar como leída
   est.lecciones[`${modId}_${idx}`] = true;
   guardarDB();
   setTopbar();
 
   const hayPrev = idx>0;
   const hayNext = idx < mod.lecciones.length-1;
+  const volverFn = origen === "bib" ? vistaBiblioteca : ()=> vistaModulo(modId);
+  const volverTxt = origen === "bib" ? "‹ Volver a biblioteca" : "‹ Volver al módulo";
+
+  const miniIndice = mod.lecciones.map((l,i)=>`
+    <button class="lec-pill ${i===idx?'lp-active':''} ${est.lecciones[`${modId}_${i}`]?'lp-done':''}" data-lec="${i}" title="${esc(l.titulo)}">
+      ${est.lecciones[`${modId}_${i}`]?'✓':i+1}
+    </button>`).join("");
 
   $("#app").innerHTML = `
-  <button class="btn btn-ghost btn-back" id="volver">‹ Volver al módulo</button>
+  <button class="btn btn-ghost btn-back" id="volver">${volverTxt}</button>
   <article class="card leccion">
-    <div class="lec-crumb">${esc(mod.titulo)}</div>
+    <div class="lec-meta">
+      <div class="lec-crumb">${esc(mod.titulo)} · Capítulo ${idx+1}/${mod.lecciones.length} · #${indiceLeccion(modId,idx)} global</div>
+      <button class="btn btn-ghost btn-sm" id="btnBibQuick">📚 Índice general</button>
+    </div>
     <h1>${esc(lec.titulo)}</h1>
+    <div class="lec-pills">${miniIndice}</div>
     <div class="lec-body">${lec.html}</div>
     <div class="lec-nav">
       <button class="btn btn-ghost" id="prev" ${hayPrev?'':'disabled'}>‹ Anterior</button>
@@ -304,9 +517,15 @@ function vistaLeccion(modId, idx){
     </div>
   </article>`;
 
-  $("#volver").addEventListener("click",()=> vistaModulo(modId));
-  const p = $("#prev"); if (p && !p.disabled) p.addEventListener("click",()=> vistaLeccion(modId, idx-1));
-  $("#next").addEventListener("click",()=> hayNext ? vistaLeccion(modId, idx+1) : vistaModulo(modId));
+  $("#volver").addEventListener("click", volverFn);
+  $("#btnBibQuick").addEventListener("click", vistaBiblioteca);
+  document.querySelectorAll(".lec-pill").forEach(p=>{
+    p.addEventListener("click",()=> vistaLeccion(modId, parseInt(p.dataset.lec,10), origen));
+  });
+  const p = $("#prev"); if (p && !p.disabled) p.addEventListener("click",()=> vistaLeccion(modId, idx-1, origen));
+  $("#next").addEventListener("click",()=> hayNext ? vistaLeccion(modId, idx+1, origen) : volverFn());
+  const docEmbed = $("#lec-docs-embed");
+  if (docEmbed) renderDocumentosEnContenedor(docEmbed, "", "todos");
   window.scrollTo(0,0);
 }
 
@@ -573,5 +792,9 @@ document.getElementById("btnSalir").addEventListener("click", ()=>{
 document.getElementById("btnTema").addEventListener("click", alternarTema);
 
 /* ----------------------- Arranque ----------------------- */
-aplicarTema(temaActual());   // sincroniza la etiqueta del botón con el tema guardado
+aplicarTema(temaActual());
+if (typeof CONFIG !== "undefined" && CONFIG.version) {
+  const fv = document.getElementById("footerVer");
+  if (fv) fv.textContent = "v" + CONFIG.version;
+}
 vistaLogin();

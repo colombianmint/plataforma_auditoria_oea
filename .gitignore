@@ -4,3 +4,7 @@ __*.html
 Thumbs.db
 .DS_Store
 desktop.ini
+
+# PDFs sueltos en raíz del repo (copias canónicas en documentos/)
+/Encuentro*.pdf
+/Resumen*.pdf

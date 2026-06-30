@@ -103,7 +103,9 @@ a{color:var(--teal2);}
 .app{max-width:var(--maxw); margin:1.5rem auto; padding:0 1.4rem; min-height:60vh;}
 .card{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:1.8rem; margin-bottom:1.4rem; border:1px solid var(--line);}
 .card-head{display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;}
+.head-actions{display:flex; gap:.7rem; flex-wrap:wrap; align-items:center;}
 .footer{max-width:var(--maxw); margin:1rem auto 2rem; padding:0 1.4rem; display:flex; justify-content:space-between; color:var(--muted); font-size:.85rem;}
+.btn-sm{padding:.4rem .75rem; font-size:.88rem;}
 
 /* ---------- Botones ---------- */
 .btn{border:none; cursor:pointer; font-size:.98rem; font-weight:600; padding:.65rem 1.1rem; border-radius:9px; background:var(--surface2); color:var(--heading); transition:.15s; font-family:inherit;}
@@ -157,6 +159,7 @@ a{color:var(--teal2);}
 .pill-ok{background:var(--ok-bg); color:var(--ok-ink);}
 .pill-warn{background:var(--warn-bg); color:var(--warn-ink);}
 .pill-lock{background:var(--surface2); color:var(--muted);}
+.pill-soft{background:var(--surface); color:var(--muted); font-weight:600; margin-left:.35rem;}
 
 /* ---------- Módulo / Lecciones ---------- */
 .mod-hero{display:flex; gap:1.1rem; align-items:center; margin-bottom:.8rem;}
@@ -175,12 +178,19 @@ a{color:var(--teal2);}
 
 /* ---------- Lección ---------- */
 .leccion{max-width:980px; margin:0 auto;}
+.lec-meta{display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:.4rem;}
 .lec-crumb{color:var(--teal2); font-weight:700; font-size:.86rem; text-transform:uppercase; letter-spacing:.5px;}
+.lec-pills{display:flex; flex-wrap:wrap; gap:.4rem; margin:.8rem 0 1.2rem;}
+.lec-pill{min-width:34px; height:34px; border-radius:20px; border:1px solid var(--line); background:var(--surface); color:var(--heading); font-weight:700; font-size:.82rem; cursor:pointer; padding:0 .55rem; font-family:inherit; transition:.12s;}
+.lec-pill:hover{border-color:var(--teal2);}
+.lec-pill.lp-active{background:var(--teal); color:#fff; border-color:var(--teal);}
+.lec-pill.lp-done{background:var(--ok-bg); border-color:var(--green); color:var(--ok-ink);}
 .lec-body{font-size:1.12rem;}
 .lec-body h4{margin:1.3rem 0 .4rem; color:var(--teal2); font-size:1.12rem;}
 .lec-body ul,.lec-body ol{padding-left:1.4rem;}
 .lec-body li{margin:.3rem 0;}
 .lec-body strong{color:var(--heading);}
+.grid-2{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1rem 1.5rem;}
 .lec-nav{display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-top:1.7rem; border-top:1px solid var(--line); padding-top:1rem;}
 .lec-count{color:var(--muted); font-size:.9rem;}
 
@@ -195,6 +205,51 @@ a{color:var(--teal2);}
 .tbl th,.tbl td{border:1px solid var(--line); padding:.55rem .7rem; text-align:left; vertical-align:top;}
 .tbl th{background:var(--th-bg); color:var(--th-ink); font-weight:600;}
 .tbl tr:nth-child(even) td{background:var(--surface);}
+
+/* ---------- Biblioteca ---------- */
+.bib-hero h1{margin-top:0;}
+.bib-search-wrap{display:flex; align-items:center; gap:1rem; margin:1.2rem 0 .8rem; flex-wrap:wrap;}
+.bib-search{flex:1; min-width:240px; padding:.85rem 1.1rem; font-size:1.05rem; border:2px solid var(--line); border-radius:12px; background:var(--surface); color:var(--ink); font-family:inherit; transition:.15s;}
+.bib-search:focus{outline:none; border-color:var(--teal2); box-shadow:0 0 0 3px rgba(29,122,140,.15);}
+.bib-count{font-size:.9rem; color:var(--muted); white-space:nowrap;}
+.bib-tags{display:flex; flex-wrap:wrap; gap:.45rem;}
+.tag-chip{border:1px solid var(--line); background:var(--surface); color:var(--teal2); font-weight:600; font-size:.82rem; padding:.35rem .7rem; border-radius:20px; cursor:pointer; font-family:inherit; transition:.12s;}
+.tag-chip:hover{border-color:var(--teal2); background:var(--info-bg);}
+.bib-mod{margin-bottom:1.4rem;}
+.bib-mod-head{display:flex; align-items:center; gap:.6rem; margin-bottom:.55rem; padding-bottom:.45rem; border-bottom:2px solid var(--line);}
+.bib-mod-head span:first-child{font-size:1.4rem;}
+.bib-list{display:flex; flex-direction:column; gap:.45rem;}
+.bib-row{display:flex; align-items:center; gap:.85rem; text-align:left; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:.75rem 1rem; cursor:pointer; transition:.13s; font-family:inherit; color:var(--ink); width:100%;}
+.bib-row:hover{border-color:var(--teal2); transform:translateX(2px);}
+.bib-row.bib-done{background:var(--ok-bg); border-color:var(--green);}
+.bib-num{width:36px; height:36px; flex:none; border-radius:50%; background:var(--teal); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85rem;}
+.bib-done .bib-num{background:var(--green);}
+.bib-body{flex:1; min-width:0;}
+.bib-body strong{display:block; color:var(--heading); line-height:1.25;}
+.bib-body small{display:block; color:var(--muted); font-size:.82rem; margin-top:.15rem;}
+.bib-go{color:var(--muted); font-size:1.3rem;}
+.bib-empty{padding:2rem 1rem; text-align:center;}
+mark{background:var(--key-bg); color:var(--heading); padding:0 .15rem; border-radius:3px;}
+
+/* ---------- Documentos PDF ---------- */
+.doc-filters{display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.5rem;}
+.tag-chip-docs{background:var(--ok-bg); border-color:var(--green); color:var(--ok-ink);}
+.tag-active{background:var(--teal); border-color:var(--teal); color:#fff;}
+.tag-static{cursor:default; font-size:.76rem; padding:.22rem .5rem;}
+.doc-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1rem;}
+.doc-group{margin-bottom:1.6rem;}
+.doc-group h3{margin:0 0 .8rem; font-size:1.12rem;}
+.doc-card{display:flex; flex-direction:column; gap:.75rem; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:1.1rem; transition:.13s;}
+.doc-card:hover{border-color:var(--teal2); box-shadow:var(--shadow);}
+.doc-icon{font-size:2rem; line-height:1;}
+.doc-body h3{margin:0 0 .35rem; font-size:1.05rem; color:var(--heading);}
+.doc-meta{margin:0; font-size:.88rem; color:var(--muted);}
+.doc-mods{margin:.35rem 0 0; font-size:.82rem; color:var(--teal2);}
+.doc-tags{display:flex; flex-wrap:wrap; gap:.3rem; margin-top:.5rem;}
+.doc-actions{display:flex; gap:.5rem; flex-wrap:wrap; margin-top:auto;}
+.doc-actions .btn{text-decoration:none; text-align:center;}
+.doc-embed .doc-group:first-child h3{margin-top:0;}
+.doc-embed .doc-card{padding:.9rem;}
 
 /* ---------- Quiz ---------- */
 .quiz{max-width:900px; margin:0 auto;}
