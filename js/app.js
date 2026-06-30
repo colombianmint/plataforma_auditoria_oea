@@ -145,7 +145,7 @@ function htmlTarjetaDocumento(doc){
     const m = MODULOS.find(x=>x.id===id);
     return m ? m.icono + " " + m.id.toUpperCase() : id;
   }).join(" · ");
-  const url = esc(doc.archivo);
+  const url = typeof asset === "function" ? asset(doc.archivo) : doc.archivo;
   const fname = doc.archivo.split("/").pop();
   return `<article class="doc-card">
     <div class="doc-icon">📄</div>
@@ -156,8 +156,8 @@ function htmlTarjetaDocumento(doc){
       <div class="doc-tags">${doc.tags.map(t=>`<span class="tag-chip tag-static">${esc(t)}</span>`).join("")}</div>
     </div>
     <div class="doc-actions">
-      <a class="btn btn-primary" href="${url}" target="_blank" rel="noopener noreferrer">👁️ Abrir PDF</a>
-      <a class="btn btn-ghost" href="${url}" download="${esc(fname)}">⬇️ Descargar</a>
+      <a class="btn btn-primary" href="${esc(url)}" target="_blank" rel="noopener noreferrer">👁️ Abrir PDF</a>
+      <a class="btn btn-ghost" href="${esc(url)}" download="${esc(fname)}">⬇️ Descargar</a>
     </div>
   </article>`;
 }
@@ -785,16 +785,43 @@ function alternarTema(){
   aplicarTema(temaActual() === "oscuro" ? "claro" : "oscuro");
 }
 
-/* ----------------------- Eventos globales ----------------------- */
-document.getElementById("btnSalir").addEventListener("click", ()=>{
-  if (confirm("¿Salir y elegir otro auditor? Tu progreso queda guardado.")) vistaLogin();
-});
-document.getElementById("btnTema").addEventListener("click", alternarTema);
+function mostrarErrorArranque(err){
+  const app = document.getElementById("app");
+  if (!app) return;
+  const msg = err && err.message ? err.message : String(err);
+  app.innerHTML = `<section class="card" style="margin-top:1rem;border-color:var(--red)">
+    <h2>No se pudo iniciar la plataforma</h2>
+    <p class="muted">Revise la consola del navegador (F12). Error: <strong>${esc(msg)}</strong></p>
+    <p>Si el problema persiste, contacte a <strong>Sistemas de Gestión</strong>.</p>
+  </section>`;
+}
+function bootApp(){
+  try {
+    document.getElementById("btnSalir").addEventListener("click", ()=>{
+      if (confirm("¿Salir y elegir otro auditor? Tu progreso queda guardado.")) vistaLogin();
+    });
+    document.getElementById("btnTema").addEventListener("click", alternarTema);
+    aplicarTema(temaActual());
+    if (typeof CONFIG !== "undefined" && CONFIG.version) {
+      const fv = document.getElementById("footerVer");
+      if (fv) fv.textContent = "v" + CONFIG.version;
+    }
+    if (typeof MODULOS === "undefined" || typeof AUDITORES === "undefined") {
+      throw new Error("No se cargó contenido.js (MODULOS/AUDITORES).");
+    }
+    if (typeof PREGUNTAS === "undefined") {
+      throw new Error("No se cargó preguntas.js.");
+    }
+    vistaLogin();
+  } catch (e) {
+    console.error(e);
+    mostrarErrorArranque(e);
+  }
+}
 
 /* ----------------------- Arranque ----------------------- */
-aplicarTema(temaActual());
-if (typeof CONFIG !== "undefined" && CONFIG.version) {
-  const fv = document.getElementById("footerVer");
-  if (fv) fv.textContent = "v" + CONFIG.version;
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", bootApp);
+} else {
+  bootApp();
 }
-vistaLogin();

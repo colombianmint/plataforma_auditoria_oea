@@ -5,6 +5,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Formación OEA · Técnicas de Auditoría Interna · ISO 19011:2018 — C.I. Colombian Mint</title>
+  <script>
+    /* Prefijo de ruta — debe ejecutarse ANTES de cualquier recurso relativo (GitHub Pages) */
+    (function (global) {
+      var REPO = "plataforma_auditoria_oea";
+      var path = global.location.pathname;
+      var base = "";
+      var marker = "/" + REPO + "/";
+      var idx = path.indexOf(marker);
+      if (idx >= 0) {
+        base = path.slice(0, idx + marker.length);
+      } else if (path.endsWith("/" + REPO)) {
+        base = path + "/";
+      }
+      global.__APP_BASE__ = base;
+      global.asset = function (rel) {
+        rel = String(rel || "").replace(/^\//, "");
+        return base + rel;
+      };
+      if (base) {
+        var baseEl = document.createElement("base");
+        baseEl.href = global.location.origin + base;
+        document.head.appendChild(baseEl);
+      }
+    })(window);
+  </script>
   <link rel="stylesheet" href="css/estilos.css">
   <script>
     /* Aplica el tema guardado antes de pintar para evitar parpadeo */
@@ -52,7 +77,14 @@
     </div>
   </header>
 
-  <main id="app" class="app"></main>
+  <main id="app" class="app">
+    <noscript>
+      <section class="card" style="margin-top:1rem">
+        <h2>JavaScript requerido</h2>
+        <p>Esta plataforma necesita JavaScript activo. Habilítelo en el navegador y recargue la página.</p>
+      </section>
+    </noscript>
+  </main>
 
   <footer class="footer">
     <span>Plataforma de formación interna · Área responsable: <strong>Sistemas de Gestión</strong></span>
